@@ -1,0 +1,35 @@
+{
+    "name": "motwreen/translation",
+    "type": "library",
+    "description": "A simple GUI for Laravel Translation.",
+    "keywords": [
+        "translation",
+        "translation gui"
+    ],
+    "homepage": "https://motwreen.com",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Ahmed Gad",
+            "email": "eng.ahmedmgad@gmail.com",
+            "homepage": "https://motwreen.com"
+        }
+    ],
+    "minimum-stability": "dev",
+    "autoload": {
+        "files":[
+            "src/Helpers/translate.php"
+        ],
+        "psr-4": {
+            "Motwreen\\Translation\\": "src/"
+        }
+    },
+    "require": {},
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Motwreen\\Translation\\ServiceProvider"
+            ]
+        }
+    }
+}
