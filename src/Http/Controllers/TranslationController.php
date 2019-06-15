@@ -1,7 +1,7 @@
 <?php
 namespace Motwreen\Translation\Http\Controllers;
 
-use App\Models\Locale;
+use Motwreen\Translation\Models\Locale;
 use Illuminate\Http\Request;
 use Motwreen\Translation\Services\LangFilesService;
 use App\Http\Controllers\Controller;
