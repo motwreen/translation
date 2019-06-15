@@ -5,17 +5,19 @@ use Illuminate\Support\Arr;
 use \Illuminate\Support\Facades\File;
 Class LangFilesService
 {
+    public $default_lang      = 'en';
     protected $default_lang_path = 'resources/lang';
 
     public function __construct($lang_path = 'resources/lang')
     {
+        $this->default_lang = config('app.locale');
         $this->default_lang_path = $lang_path;
     }
 
-    public function createNewLangFilesFromDefault($new_lang,$default_lang='en')
+    public function createNewLangFilesFromDefault($new_lang,$default_lang=null)
     {
         $new_path       = base_path($this->default_lang_path.'/'.$new_lang);
-        $default_path   = base_path($this->default_lang_path.'/'.$default_lang);
+        $default_path   = base_path($this->default_lang_path.'/'.$default_lang??$this->default_lang);
 
         $this->createDirectory($new_path);
         $this->copyFiles($default_path,$new_path);
@@ -54,7 +56,7 @@ Class LangFilesService
     {
         $path = base_path($this->default_lang_path.'/'.$lang.'/'.$file);
         $currentData = (@include $path)?include $path:[];
-        $data = array_merge_recursive($currentData,$new_data);
+        $data = array_merge_recursively($currentData,$new_data);
         $this->writeArrayToFile($data,$path);
     }
 
@@ -70,15 +72,15 @@ Class LangFilesService
     public function readArrayFromFile($lang,$file)
     {
         $otherArray =  Arr::dot(include base_path($this->default_lang_path.'/'.$lang.'/'.$file));
-        $defaultArray = Arr::dot(include base_path($this->default_lang_path.'/en/'.$file));
+        $defaultArray = Arr::dot(include base_path($this->default_lang_path.'/'.$this->default_lang.'/'.$file));
 
 //        $keysArray = array_keys($defaultArray) + array_keys($defaultArray);
         $keysArray = array_unique(array_merge(array_keys($defaultArray),array_keys($otherArray)));
 
         $result=[];
         foreach ($keysArray as $key){
-            if($lang !='en')
-                $result[$key]['en']=$defaultArray[$key]??"";
+            if($lang !=$this->default_lang)
+                $result[$key]['default']=$defaultArray[$key]??"";
             $result[$key]['other']=$otherArray[$key]??"";
         }
         return $result;

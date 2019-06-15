@@ -117,14 +117,19 @@ class TranslationController extends Controller
         }
 
         if(count($newKeysToAddInBoathFiles) !== 0){
-            $filesService->appendKeysToFile('en',$request->get('file'),$newKeysToAddInBoathFiles['en']);
+            if($locale->iso != $filesService->default_lang)
+                $filesService->appendKeysToFile($filesService->default_lang,$request->get('file'),$newKeysToAddInBoathFiles['default']);
             $filesService->appendKeysToFile($locale->iso,$request->get('file'),$newKeysToAddInBoathFiles['other']);
         }
+
         return redirect(route('translation.show',[$locale]))->with(['success'=>'Your Translations saved successfully']);
     }
 
-    public function readLangFileAjax($locale,$filename)
+    public function readLangFileAjax(Request $request)
     {
+        $locale = $request->get('locale');
+        $filename = $request->get('file');
+
         $files = new LangFilesService();
         $data = $files->readArrayFromFile($locale,$filename);
         return response()->json($data);

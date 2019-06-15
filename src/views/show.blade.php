@@ -7,9 +7,9 @@
                 <div class="card">
                     <div class="card-header">Dashboard</div>
                     <div class="card-body">
-                        @if (session('status'))
+                        @if (session('success'))
                             <div class="alert alert-success" role="alert">
-                                {{ session('status') }}
+                                {{ session('success') }}
                             </div>
                         @endif
                     {{Form::open(['route'=>['translation.save_translations',$locale]])}}
@@ -50,14 +50,16 @@
                                         {{Form::text('',null,['class'=>'form-control','id'=>'index_key'])}}
                                     </div>
                                 </div>
+                                @if($locale->iso != config('app.locale'))
                                 <div class="col-md-4">
                                     <div class="form-group">
                                         <label for="">English Value</label>
                                         {{Form::text('',null,['class'=>'form-control','id'=>'index_value_en'])}}
                                     </div>
                                 </div>
+                                @endif
 
-                                <div class="col-md-4">
+                                <div class="col-md-{{($locale->iso == config('app.locale'))?"8":"4"}}">
                                     <div class="form-group">
                                         <label for="">{{$locale->name}} Value</label>
                                         {{Form::text('',null,['class'=>'form-control','id'=>'index_value_other'])}}
@@ -66,7 +68,7 @@
                                 <div class="col-md-1">
                                     <div class="form-group">
                                         <label for="">Add Key</label>
-                                        <button class="btn btn-success" type="button" id="addNewKey"><i class="fa fa-plus"></i></button>
+                                        <button class="btn btn-success" type="button" id="addNewKey"><i class="fa fa-plus"></i> Add Key</button>
                                     </div>
                                 </div>
 
@@ -99,7 +101,7 @@
 
             $('input[name="new_file_name"]').on('change',function () {
                 $.ajax({
-                    url: "{{url('admin/locales/ajax_validate/file_name')}}?lang={{$locale->iso}}&new_file_name="+$(this).val(),
+                    url: "{{route('translation.validate_file_name')}}?lang={{$locale->iso}}&new_file_name="+$(this).val(),
                     beforeSend: function( xhr ) {
                         xhr.overrideMimeType( "text/plain; charset=x-user-defined" );
                     }
@@ -119,8 +121,13 @@
                 $key = $('#index_key');
                 $en = $('#index_value_en');
                 $other = $('#index_value_other');
+                if($key.val().trim() === ""){
+                    return false;
+                }
 
-                newKeyValue($key.val(),$en.val(),'en',$('#inputs_wrapper'));
+                @if($locale->iso != config('app.locale'))
+                    newKeyValue($key.val(),$en.val(),'default',$('#inputs_wrapper'));
+                @endif
                 newKeyValue($key.val(),$other.val(),'other',$('#inputs_wrapper'));
 
                 $key.val('');
@@ -145,7 +152,7 @@
                 }
 
                 $.ajax({
-                    url: "{{url('admin/locales/ajax_read/')}}/"+$lang+"/"+$file_name,
+                    url: "{{route('translation.ajax_read_file')}}/?locale="+$lang+"&file="+$file_name,
                     beforeSend: function( xhr ) {
                         xhr.overrideMimeType( "text/plain; charset=x-user-defined" );
                     }
@@ -157,7 +164,9 @@
 
             function convertDataToInputs(data) {
                 $.each(data,function ($key,$value) {
-                    inputToDom($key, $value['en'],$('#inputs_wrapper'));
+                    @if($locale->iso != config('app.locale'))
+                    inputToDom($key, $value['default'],$('#inputs_wrapper'));
+                    @endif
                     inputToDom($key, $value['other'],$('#inputs_wrapper'));
                 });
 
@@ -172,19 +181,19 @@
             function inputToDom($key,$value,$where,disabled) {
                 if(disabled===1){
                     $input =
-                    '<div class="col-md-6">' +
+                    '<div class="col-md-{{($locale->iso == config('app.locale'))?"12":"6"}}">' +
                         '<div class="form-group">' +
                             '<label for="'+$key+'">'+$key.trim("newkey.en")+'</label>' +
-                            '<input class="form-control" id="'+$key+'" required="" disabled="disabled" name="'+$key+'" type="text" value="'+$value+'">'+
+                            '<input class="form-control" id="'+$key+'" disabled="disabled" name="'+$key+'" type="text" value="'+$value+'">'+
                             '<small class="text-danger"></small>'+
                         '</div>'+
                     '</div>';
                 }else{
                     $input =
-                    '<div class="col-md-6">\n' +
+                    '<div class="col-md-{{($locale->iso == config('app.locale'))?"12":"6"}}">\n' +
                         '<div class="form-group">\n' +
-                            '<label for="'+$key+'">'+$key.replace("newkey.en.","").replace("newkey.other.","")+'</label>\n' +
-                            '<input class="form-control" id="'+$key+'" required="" name="'+$key+'" type="text" value="'+$value+'">\n' +
+                            '<label for="'+$key+'">'+$key.replace("newkey.default.","").replace("newkey.other.","")+'</label>\n' +
+                            '<input class="form-control" id="'+$key+'" name="'+$key+'" type="text" value="'+$value+'">\n' +
                             '<small class="text-danger"></small>\n' +
                         '</div>'+
                     '</div>';
