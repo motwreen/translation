@@ -11,7 +11,7 @@ class ServiceProvider extends \Illuminate\Support\ServiceProvider
 
         $this->publishes([
             __DIR__.'/views' => resource_path('views/vendor/translation'),
-            __DIR__.'/migrations' => resource_path('views/vendor/translation'),
+            __DIR__.'/migrations' => base_path('database/migrations'),
 
         ],'motwreen-translation');
     }

@@ -1,6 +1,6 @@
 <?php
 
-namespace Motwreen\Translation\Traits;
+namespace App\Traits;
 
 use Motwreen\Translation\Models\Locale;
 use Motwreen\Translation\Models\Translation;
@@ -120,11 +120,11 @@ trait TranslatableTrait
 
     public function translateAttributes(array $values)
     {
-        $locals = (new self)->locales()->pluck('id', 'code')->toArray();
+        $locals = (new self)->locales()->pluck('iso','id')->toArray();
         foreach ($values as $localeName => $items) {
-            if (in_array($localeName, array_keys($locals))) {
+            if (in_array($localeName, $locals)) {
                 foreach ($items as $attribute => $value) {
-                    $this->setTranslation($attribute, $value, $locals[$localeName]);
+                    $this->setTranslation($attribute, $value, array_flip($locals)[$localeName]);
                 }
             }
         }
