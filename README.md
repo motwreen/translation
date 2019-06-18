@@ -34,25 +34,14 @@ class Category extends Model
 }
 
 ```
-You must transform translated values like this : 
-```
-$data = [
-  'en'=>[
-    'name' => 'Test Name',
-    'description' => 'Test Description',
-  ],
-  'ar'=>[
-    'name' => 'تجربه',
-    'description' => 'تجربه الوصف',
-  ],
-]
-```
-and in your controller :
+
+And in your controller :
 ```
 public function store(Request $request){
     $category = new App\Category;
+    $category->name => ['en'=>'Test Name','du'=>'Miene name ist Test'];
+    $category->description => ['en'=>'Test Description','du'=>'Miene name ist Description'];
     $category->save();
-    $category->translateAttributes($data)
 }
 
 ```
