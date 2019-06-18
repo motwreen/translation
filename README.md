@@ -7,13 +7,31 @@ it will also allows you to translate user inputs (models or database columns dat
 ## Installation
 So simple just run `composer require motwreen/translation` in your application terminal.
 
-#### after installation you can access translation gui with `http://app-url.dev/translation`.
-
 ## Publish
 If you'd like to edit package views run `php artisan vendor:publish --tag=motwreen-translation` in your terminal and you'll find it in this path : `resources/views/vendor/translation`.
 
 ## Migrate
 To migrate database tables run `php artisan migrate` 
+
+## Using GUI
+
+* after installation you can access translation gui with `http://app-url.dev/translation`.
+* create your languages and translate them.
+* you can use (.) dot syntax to defind multidimensional array in lang file like this in `key` field:
+```
+level1.level2.level3.level4.etc
+```
+which will produce this result in lang file 
+```
+'level1' => [
+        'level2' => [
+            'level3' => [
+                'level4' => 'etc',
+            ],
+        ],
+    ],
+```
+
 
 ## Database translation 
 * To start using database translations in your models use this trait `Motwreen\Translation\Traits\TranslatableTrait`.
