@@ -56,12 +56,10 @@ class TranslationController extends Controller
     public function show($locale)
     {
         $locale = Locale::findOrFail($locale);
-        $files = str_replace(resource_path().'/lang/','',\File::directories(resource_path().'/lang/'));
-        if(!in_array($locale->iso,$files)){
-            $files = new LangFilesService();
-            $files->createNewLangFilesFromDefault($locale->iso);
-        }
-        $files_in_dir=[];
+
+        $files = new LangFilesService();
+        $files->createNewLangFilesFromDefault($locale->iso);
+
         $files = File::files(resource_path('lang/'.$locale->iso));
         $files_in_dir['new_file'] = 'Create New file';
         foreach ($files as $file)
@@ -88,6 +86,7 @@ class TranslationController extends Controller
      */
     public function saveTranslations(Locale $locale, Request $request)
     {
+
         $this->validate($request,[
             'file'=>'required',
         ]);
@@ -112,14 +111,14 @@ class TranslationController extends Controller
 
         $filesList = str_replace(resource_path().'/lang/','',File::directories(resource_path().'/lang/'));
         $filesService = new LangFilesService();
-        if(in_array($locale->iso,$filesList)){
-            $filesService->updateLangFile($locale->iso,$request->get('file'),$transformedArray);
-        }
+//        if(in_array($locale->iso,$filesList)){
+//            $filesService->updateLangFile($locale->iso,$request->get('file'),$transformedArray);
+//        }
 
         if(count($newKeysToAddInBoathFiles) !== 0){
             if($locale->iso != $filesService->default_lang)
-                $filesService->appendKeysToFile($filesService->default_lang,$request->get('file'),$newKeysToAddInBoathFiles['default']);
-            $filesService->appendKeysToFile($locale->iso,$request->get('file'),$newKeysToAddInBoathFiles['other']);
+                $filesService->updateLangFile($filesService->default_lang,$request->get('file'),$newKeysToAddInBoathFiles['default']);
+            $filesService->updateLangFile($locale->iso,$request->get('file'),$newKeysToAddInBoathFiles['other']);
         }
 
         return redirect(route('translation.show',[$locale]))->with(['success'=>'Your Translations saved successfully']);

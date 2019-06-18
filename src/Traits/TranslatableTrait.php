@@ -1,6 +1,5 @@
 <?php
-//TODO : fix return appended data after addd new records
-//TODO : Copy All language files after create new
+
 namespace Motwreen\Translation\Traits;
 
 use function foo\func;
@@ -33,6 +32,9 @@ trait TranslatableTrait
 
         static::saved(function ($model){
             (new self)->translateAttributes(self::$toTranslate,$model->id );
+            foreach (self::$toTranslate as $attribute => $value)
+                $model->attributes[$attribute] = $value[app()->getLocale()];
+
         });
 
         static::deleted(function ($model) {

@@ -17,7 +17,7 @@ Class LangFilesService
     public function createNewLangFilesFromDefault($new_lang,$default_lang=null)
     {
         $new_path       = base_path($this->default_lang_path.'/'.$new_lang);
-        $default_path   = base_path($this->default_lang_path.'/'.$default_lang??$this->default_lang);
+        $default_path   = base_path($this->default_lang_path.'/'.($default_lang??$this->default_lang));
 
         $this->createDirectory($new_path);
         $this->copyFiles($default_path,$new_path);
@@ -34,9 +34,11 @@ Class LangFilesService
     {
         $files = File::files($form);
         foreach ($files as $file) {
-            $strings = include $file;
             $new_file_path = $to.'/'.$file->getFilename() ;
-            $this->writeArrayToFile($strings,$new_file_path);
+            if(!File::exists($new_file_path)){
+                $strings = include $file;
+                $this->writeArrayToFile($strings,$new_file_path);
+            }
         }
     }
 
