@@ -45,3 +45,7 @@ public function store(Request $request){
 }
 
 ```
+
+##TODO:
+* Fix return appended data after addd new records
+* Copy All language files from default lang to newely created lang

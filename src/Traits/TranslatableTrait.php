@@ -1,6 +1,7 @@
 <?php
-
-namespace App\Traits;
+//TODO : fix return appended data after addd new records
+//TODO : Copy All language files after create new
+namespace Motwreen\Translation\Traits;
 
 use function foo\func;
 use Motwreen\Translation\Models\Locale;
