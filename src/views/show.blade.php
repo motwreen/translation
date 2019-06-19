@@ -96,7 +96,7 @@
             readFile("{{$locale->iso}}",$('select[name="file"]').val());
 
             $('select[name="file"]').on('change',function () {
-               readFile("{{$locale->iso}}",$(this).val());
+                readFile("{{$locale->iso}}",$(this).val());
             });
 
             $('input[name="new_file_name"]').on('change',function () {
@@ -126,7 +126,7 @@
                 }
 
                 @if($locale->iso != config('app.locale'))
-                    newKeyValue($key.val(),$en.val(),'default',$('#inputs_wrapper'));
+                newKeyValue($key.val(),$en.val(),'default',$('#inputs_wrapper'));
                 @endif
                 newKeyValue($key.val(),$other.val(),'other',$('#inputs_wrapper'));
 
@@ -165,9 +165,12 @@
             function convertDataToInputs(data) {
                 $.each(data,function ($key,$value) {
                     @if($locale->iso != config('app.locale'))
-                    inputToDom($key, $value['default'],$('#inputs_wrapper'));
+                    // inputToDom($key, $value['default'],$key,$('#inputs_wrapper'));
+                    console.log($value);
+                        newKeyValue($key,$value['default'],'default',$('#inputs_wrapper'));
                     @endif
-                    inputToDom($key, $value['other'],$('#inputs_wrapper'));
+                    newKeyValue($key,$value['other'],'other',$('#inputs_wrapper'));
+                    // inputToDom($key, $value['other'],$('#inputs_wrapper'));
                 });
 
             }
@@ -181,22 +184,22 @@
             function inputToDom($key,$value,$where,disabled) {
                 if(disabled===1){
                     $input =
-                    '<div class="col-md-{{($locale->iso == config('app.locale'))?"12":"6"}}">' +
+                        '<div class="col-md-{{($locale->iso == config('app.locale'))?"12":"6"}}">' +
                         '<div class="form-group">' +
-                            '<label for="'+$key+'">'+$key.trim("newkey.en")+'</label>' +
-                            '<input class="form-control" id="'+$key+'" disabled="disabled" name="'+$key+'" type="text" value="'+$value+'">'+
-                            '<small class="text-danger"></small>'+
+                        '<label for="'+$key+'">'+$key.trim("newkey.en")+'</label>' +
+                        '<input class="form-control" id="'+$key+'" disabled="disabled" name="'+$key+'" type="text" value="'+$value+'">'+
+                        '<small class="text-danger"></small>'+
                         '</div>'+
-                    '</div>';
+                        '</div>';
                 }else{
                     $input =
-                    '<div class="col-md-{{($locale->iso == config('app.locale'))?"12":"6"}}">\n' +
+                        '<div class="col-md-{{($locale->iso == config('app.locale'))?"12":"6"}}">\n' +
                         '<div class="form-group">\n' +
-                            '<label for="'+$key+'">'+$key.replace("newkey.default.","").replace("newkey.other.","")+'</label>\n' +
-                            '<input class="form-control" id="'+$key+'" name="'+$key+'" type="text" value="'+$value+'">\n' +
-                            '<small class="text-danger"></small>\n' +
+                        '<label for="'+$key+'">'+$key.replace("newkey.default.","").replace("newkey.other.","")+'</label>\n' +
+                        '<input class="form-control" id="'+$key+'" name="'+$key+'" type="text" value="'+$value+'">\n' +
+                        '<small class="text-danger"></small>\n' +
                         '</div>'+
-                    '</div>';
+                        '</div>';
                 }
                 $where.append($input);
             }
