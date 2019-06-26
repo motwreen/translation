@@ -12,7 +12,7 @@ class Translation
     public static function routes(array $options = [])
     {
        $packageOptions= ['namespace' => 'Motwreen\Translation\Http\Controllers', 'middleware' => ['web']];
-       $mergedGroups  = array_merge($packageGroup,$options);
+       $mergedGroups  = array_merge($packageOptions,$options);
       
 		Route::group($mergedGroups, function() {
 		    Route::get('translation/ajax_validate/file_name', 'TranslationController@validateNewFileName')->name('translation.validate_file_name');
