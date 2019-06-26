@@ -31,7 +31,10 @@
         "laravel": {
             "providers": [
                 "Motwreen\\Translation\\ServiceProvider"
-            ]
+            ],
+            "aliases": {
+                "Translation": "Motwreen\\Translation\\Facades\\Translation"
+            }
         }
     }
 }
