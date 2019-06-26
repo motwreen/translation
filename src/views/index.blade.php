@@ -15,7 +15,7 @@
                         @endif
 
                         <div class="col-md-12 text-right">
-                            <a href="{{route('translation.create')}}" class="btn btn-success">Add New</a>
+                            <a href="{{action('\Motwreen\Translation\Http\Controllers\TranslationController@create')}}" class="btn btn-success">Add New</a>
                             <br>
                             <br>
                         </div>
@@ -34,8 +34,8 @@
                                         <td>{{$locale->name}}</td>
                                         <td>{{$locale->iso}}</td>
                                         <td>
-                                            {{Form::open(['route'=>['translation.destroy',$locale],'method'=>'delete'])}}
-                                                <a href="{{route('translation.destroy',[$locale])}}" class="btn btn-success"> <i class="fa fa-eye"></i> Show</a>
+                                            {{Form::open(['action'=>['\Motwreen\Translation\Http\Controllers\TranslationController@destroy',$locale],'method'=>'delete'])}}
+                                                <a href="{{action('\Motwreen\Translation\Http\Controllers\TranslationController@show',[$locale])}}" class="btn btn-success"> <i class="fa fa-eye"></i> Show</a>
                                                 @if(!$locale->default)
                                                     <button type="submit" class="btn btn-danger" onclick="return confirm('Are you sure to delete ?')"> <i class="fa fa-times"></i> Delete</button>
                                                 @endif

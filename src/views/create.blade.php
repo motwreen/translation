@@ -13,7 +13,7 @@
                                 {{ session('status') }}
                             </div>
                         @endif
-                        {{Form::open(['route'=>'translation.store'])}}
+                        {{Form::open(['action'=>'\Motwreen\Translation\Http\Controllers\TranslationController@store'])}}
 
                         <div class="row">
                             <div class="col-md-6">

@@ -1,6 +1,8 @@
 <?php
 namespace Motwreen\Translation;
 
+use Motwreen\Translation\Translation;
+
 class ServiceProvider extends \Illuminate\Support\ServiceProvider
 {
     public function boot()
@@ -16,6 +18,11 @@ class ServiceProvider extends \Illuminate\Support\ServiceProvider
         ],'motwreen-translation');
     }
 
-    public function register(){}
+    public function register()
+    {
+        $this->app->bind('Translation', function () {
+            return new Translation();
+        });
+    }
 
 }

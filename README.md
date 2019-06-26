@@ -10,6 +10,14 @@ So simple just run `composer require motwreen/translation` in your application t
 ## Publish
 If you'd like to edit package views run `php artisan vendor:publish --tag=motwreen-translation` in your terminal and you'll find it in this path : `resources/views/vendor/translation`.
 
+## Routes
+you can include translations routes in your application like this in `web.php` file.
+```
+$options = ['prefix'=>'admin/translation/','middleware'=>['web','auth:admin']];
+Translations::routes($options);
+```
+
+
 ## Migrate
 To migrate database tables run `php artisan migrate` 
 

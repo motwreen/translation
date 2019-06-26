@@ -12,7 +12,7 @@
                                 {{ session('success') }}
                             </div>
                         @endif
-                    {{Form::open(['route'=>['translation.save_translations',$locale]])}}
+                    {{Form::open(['action'=>['\Motwreen\Translation\Http\Controllers\TranslationController@saveTranslations',$locale]])}}
                         <div class="row">
                             <div class="col-md-12">
                                 <div class="form-group">
@@ -101,7 +101,7 @@
 
             $('input[name="new_file_name"]').on('change',function () {
                 $.ajax({
-                    url: "{{route('translation.validate_file_name')}}?lang={{$locale->iso}}&new_file_name="+$(this).val(),
+                    url: "{{action('\\Motwreen\\Translation\\Http\\Controllers\\TranslationController@validateNewFileName')}}?lang={{$locale->iso}}&new_file_name="+$(this).val(),
                     beforeSend: function( xhr ) {
                         xhr.overrideMimeType( "text/plain; charset=x-user-defined" );
                     }
@@ -152,7 +152,7 @@
                 }
 
                 $.ajax({
-                    url: "{{route('translation.ajax_read_file')}}/?locale="+$lang+"&file="+$file_name,
+                    url: "{{action('\\Motwreen\\Translation\\Http\\Controllers\\TranslationController@readLangFileAjax')}}/?locale="+$lang+"&file="+$file_name,
                     beforeSend: function( xhr ) {
                         xhr.overrideMimeType( "text/plain; charset=x-user-defined" );
                     }
