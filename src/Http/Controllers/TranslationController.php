@@ -50,7 +50,7 @@ class TranslationController extends Controller
         $files = new LangFilesService();
         $files->createNewLangFilesFromDefault($locale->iso);
 
-        return redirect(route('translation.index'))->with(['success'=>'Locale Created Successfully']);
+        return redirect(action('Motwreen\Translation\Http\Controllers\TranslationController@index'))->with(['success'=>'Locale Created Successfully']);
     }
 
     public function show($locale)
@@ -75,7 +75,7 @@ class TranslationController extends Controller
         $locale->delete();
         $files = new LangFilesService();
         $files->deleteDirectory($locale->iso);
-        return redirect(route('translation.index'))->with(['success'=>'Locale deleted Successfully']);
+        return redirect(action('Motwreen\Translation\Http\Controllers\TranslationController@index'))->with(['success'=>'Locale deleted Successfully']);
     }
 
     /**
@@ -121,7 +121,7 @@ class TranslationController extends Controller
             $filesService->updateLangFile($locale->iso,$request->get('file'),$newKeysToAddInBoathFiles['other']);
         }
 
-        return redirect(route('translation.show',[$locale]))->with(['success'=>'Your Translations saved successfully']);
+        return redirect(action('Motwreen\Translation\Http\Controllers\TranslationController@show',[$locale]))->with(['success'=>'Your Translations saved successfully']);
     }
 
     public function readLangFileAjax(Request $request)
