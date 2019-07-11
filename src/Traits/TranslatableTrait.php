@@ -46,12 +46,25 @@ trait TranslatableTrait
         return $this->hasMany( Translation::class,'model_id')->where('model',get_class($this));
     }
 
+//    public function getAllTranslations()
+//    {
+//        $locales = $this->locales();
+//        foreach ($locales as $locale)
+//            $trans[$locale->iso]=$this->getTranslatedAttributes($locale->id);
+//        return $trans;
+//    }
+
     public function getAllTranslations()
     {
+        $trans = [];
         $locales = $this->locales();
-        foreach ($locales as $locale)
-            $trans[$locale->iso]=$this->getTranslatedAttributes($locale->id);
-        return $trans;
+        foreach ($this->translatable as $attribute){
+            foreach ($locales as $locale){
+                $trans[$attribute][$locale->iso] = $this->getTranslation($attribute,$locale->id);
+            }
+        }
+        $this->attributes = array_merge($this->attributes,$trans);
+        return $this;
     }
 
     public function getTranslatedAttributes($locale=null)
@@ -114,11 +127,10 @@ trait TranslatableTrait
             $translation->model_id = $model_id;
             $translation->attribute = $key;
             $translation->locale_id = $locale;
-            $translation->value = $value;
+            $translation->value = $value??"";
         } else {
-            $translation->value = $value;
+            $translation->value = $value??"";
         }
-
         return $translation->save();
     }
 
@@ -157,6 +169,21 @@ trait TranslatableTrait
         }
         $translations->delete();
     }
+
+    public function scopeWhereTranslatable($query,$attribute,$operator="=",$value=null)
+    {
+        if(!in_array($attribute,$this->translatable))
+            return $query;
+
+        if(func_num_args() < 4){
+            $value = $operator;
+            $operator = "=";
+        }
+        return $query->whereHas('translations',function ($translations)use($attribute,$operator,$value){
+            $translations->where('attribute',$attribute)->where('value',$operator,$value);
+        });
+    }
+
 
     public static function makeSlug($string, $locale = null)
     {
