@@ -25,7 +25,7 @@
         }
     },
     "require": {
-        "laravelcollective/html": "^5.8.0"
+        "laravelcollective/html": "^6.2.0"
     },
     "extra": {
         "laravel": {
