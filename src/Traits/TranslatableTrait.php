@@ -12,12 +12,11 @@ trait TranslatableTrait
     public $translationRow = [];
 
     public static $toTranslate = [];
-    protected static function boot()
+    protected static function bootTranslatableTrait()
     {
-        parent::boot();
         static::retrieved(function ($model)
         {
-            $locale = (new self)->defaultLocale();
+            $locale = (new self)->defaultLocale()->id;
             $model->translationRow =  Translation::where("model", get_class($model))->where("model_id", $model->id)->get();
             $model->getTranslatedAttributes();
         });
@@ -26,9 +25,10 @@ trait TranslatableTrait
             $translatable = (new self)->getTranslatable();
             foreach ($translatable as $attribute){
                 self::$toTranslate[$attribute] = $model->attributes[$attribute];
-                unset($model->attributes[$attribute]);
+                $model->attributes[$attribute] = $model->attributes[$attribute][(new self)->defaultLocale()->iso];
             }
         });
+
 
         static::saved(function ($model){
             (new self)->translateAttributes(self::$toTranslate,$model->id );
@@ -45,15 +45,7 @@ trait TranslatableTrait
     public function translations(){
         return $this->hasMany( Translation::class,'model_id')->where('model',get_class($this));
     }
-
-//    public function getAllTranslations()
-//    {
-//        $locales = $this->locales();
-//        foreach ($locales as $locale)
-//            $trans[$locale->iso]=$this->getTranslatedAttributes($locale->id);
-//        return $trans;
-//    }
-
+    
     public function getAllTranslations()
     {
         $trans = [];
@@ -79,7 +71,7 @@ trait TranslatableTrait
 
     protected function defaultLocale()
     {
-        return (new self)->locales()->where('iso', app()->getLocale())->first()->id;
+        return (new self)->locales()->where('iso', app()->getLocale())->first();
     }
 
     public function __get($key)
@@ -96,7 +88,7 @@ trait TranslatableTrait
     public function getTranslation($key, $locale = NULL)
     {
         if (!$locale) {
-            $locale = $this->defaultLocale();
+            $locale = $this->defaultLocale()->id;
         }
         if (count($this->translationRow) == 0) {
             return "";
@@ -116,7 +108,7 @@ trait TranslatableTrait
         if(!in_array($key,$this->translatable))
             return false;
         if (!$locale) {
-            $locale = $this->defaultLocale();
+            $locale = $this->defaultLocale()->id;
         }
 
         $translation = Translation::where("model", get_class($this))->where("model_id", $model_id)->where("attribute", $key)->where("locale_id", $locale)->first();
@@ -133,21 +125,7 @@ trait TranslatableTrait
         }
         return $translation->save();
     }
-
-//    public function toJson($locale = NULL)
-//    {
-//        if (!$locale) {
-//            $locale = $this->defaultLocale();
-//        }
-//        $array = $this->toArray();
-//        if (isset($this->translatable)) {
-//            foreach ($this->translatable as $value) {
-//                $array[$value] = $this->getTranslation($value, $locale);
-//            }
-//        }
-//        return json_encode($array);
-//    }
-
+    
     protected function translateAttributes(array $values,$model_id)
     {
         $locals = (new self)->locales()->pluck('iso','id')->toArray();
@@ -188,7 +166,7 @@ trait TranslatableTrait
     public static function makeSlug($string, $locale = null)
     {
         if (!$locale) {
-            $locale = (new self)->defaultLocale();
+            $locale = (new self)->defaultLocale()->id;
         }
         $slug = make_slug($string);
         $slug = preg_replace('/-[0-9]*$/', '', $slug);
