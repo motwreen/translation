@@ -1,5 +1,5 @@
 <?php
-namespace Motwreen\Translation\Services;
+namespace Motwreen\Translation\Service;
 
 use Illuminate\Support\Arr;
 use \Illuminate\Support\Facades\File;
