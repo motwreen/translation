@@ -2,7 +2,7 @@
 
 namespace Motwreen\Translation\Traits;
 
-use function foo\func;
+use Illuminate\Database\Eloquent\Model;
 use Motwreen\Translation\Models\Locale;
 use Motwreen\Translation\Models\Translation;
 
@@ -21,11 +21,13 @@ trait TranslatableTrait
             $model->getTranslatedAttributes();
         });
 
-        static::saving(function ($model){
+        static::saving(function (Model  $model){
             $translatable = (new self)->getTranslatable();
             foreach ($translatable as $attribute){
-                self::$toTranslate[$attribute] = $model->attributes[$attribute];
-                $model->attributes[$attribute] = $model->attributes[$attribute][(new self)->defaultLocale()->iso];
+                if($model->getAttribute($attribute)){
+                    self::$toTranslate[$attribute] = $model->attributes[$attribute];
+                    $model->attributes[$attribute] = $model->attributes[$attribute][(new self)->defaultLocale()->iso];
+                }
             }
         });
 
@@ -45,7 +47,7 @@ trait TranslatableTrait
     public function translations(){
         return $this->hasMany( Translation::class,'model_id')->where('model',get_class($this));
     }
-    
+
     public function getAllTranslations()
     {
         $trans = [];
@@ -125,7 +127,7 @@ trait TranslatableTrait
         }
         return $translation->save();
     }
-    
+
     protected function translateAttributes(array $values,$model_id)
     {
         $locals = (new self)->locales()->pluck('iso','id')->toArray();
