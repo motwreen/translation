@@ -5,6 +5,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Locale extends Model
 {
+    use UsesTenantConnection;
 
     public function getDefaultAttribute()
     {
