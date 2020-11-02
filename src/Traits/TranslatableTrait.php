@@ -31,12 +31,13 @@ trait TranslatableTrait
             }
         });
 
-
         static::saved(function ($model){
             (new self)->translateAttributes(self::$toTranslate,$model->id );
             foreach (self::$toTranslate as $attribute => $value)
                 $model->attributes[$attribute] = $value[app()->getLocale()];
 
+            $model->translationRow =  Translation::where("model", get_class($model))->where("model_id", $model->id)->get();
+            $model->getTranslatedAttributes();
         });
 
         static::deleted(function ($model) {
@@ -64,7 +65,7 @@ trait TranslatableTrait
     public function getTranslatedAttributes($locale=null)
     {
         $res = [];
-        $locale??$this->locales()->where('iso',app()->getLocale())->first()->id;
+        $locale = $locale??$this->locales()->where('iso',app()->getLocale())->first()->id;
         foreach ($this->translatable as $key) {
             $this->{$key} = $this->getTranslation($key,$locale);
         }
